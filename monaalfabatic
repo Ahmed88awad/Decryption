@@ -1,0 +1,32 @@
+import string
+from collections import Counter
+
+ENGLISH_FREQ = 'ETAOINSHRDLCUMWFGYPBVKJXQZ'
+
+def frequency_analysis(ciphertext):
+    ciphertext = ''.join(filter(str.isalpha, ciphertext.upper()))
+    freqs = Counter(ciphertext)
+    most_common = ''.join([pair[0] for pair in freqs.most_common()])
+    return most_common
+
+def create_substitution_map(ciphertext_freq, reference_freq=ENGLISH_FREQ):
+    return dict(zip(ciphertext_freq, reference_freq))
+
+def decrypt(ciphertext, substitution_map):
+    result = ''
+    for char in ciphertext:
+        upper_char = char.upper()
+        if upper_char in substitution_map:
+            decrypted_char = substitution_map[upper_char]
+            result += decrypted_char.lower() if char.islower() else decrypted_char
+        else:
+            result += char
+    return result
+
+ciphertext = "Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj."
+
+cipher_freq = frequency_analysis(ciphertext)
+sub_map = create_substitution_map(cipher_freq)
+plaintext = decrypt(ciphertext, sub_map)
+
+print("Decrypted text:\n", plaintext)
